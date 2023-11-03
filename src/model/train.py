@@ -25,7 +25,10 @@ def main(args):
     X_train, X_test, y_train, y_test = split_data(df)
 
     # train model
-    train_model(args.reg_rate, X_train, X_test, y_train, y_test)
+    model = train_model(args.reg_rate, X_train, y_train)
+
+    # evaluate model
+    evaluate_model(model, X_test, y_test)
 
 
 def get_csvs_df(path):
@@ -56,6 +59,16 @@ def evaluate_model(model, X_test, y_test):
     y_scores = model.predict_proba(X_test)
     auc = roc_auc_score(y_test, y_scores[:,1])
 
+    # plot ROC curve
+    fpr, tpr, thresholds = roc_curve(y_test, y_scores[:,1])
+    fig = plt.figure(figsize=(6, 4))
+    # Plot the diagonal 50% line
+    plt.plot([0, 1], [0, 1], 'k--')
+    # Plot the FPR and TPR achieved by our model
+    plt.plot(fpr, tpr)
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
     
     return acc, auc
 

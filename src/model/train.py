@@ -8,7 +8,10 @@ import pandas as pd
 import mlflow
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-
+import numpy as np
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_curve
+import matplotlib.pyplot as plt
 
 # define functions
 def main(args):
@@ -41,10 +44,20 @@ def split_data(df):
     return X_train, X_test, y_train, y_test
     
 
-def train_model(reg_rate, X_train, X_test, y_train, y_test):
+def train_model(reg_rate, X_train, y_train):
     # train model
-    LogisticRegression(C=1/reg_rate, solver="liblinear").fit(X_train, y_train)
+    model = LogisticRegression(C=1/reg_rate, solver="liblinear").fit(X_train, y_train)
+    return model
+    
+def evaluate_model(model, X_test, y_test):
+    y_hat = model.predict(X_test)
+    acc = np.average(y_hat == y_test)
 
+    y_scores = model.predict_proba(X_test)
+    auc = roc_auc_score(y_test, y_scores[:,1])
+
+    
+    return acc, auc
 
 def parse_args():
     # setup arg parser

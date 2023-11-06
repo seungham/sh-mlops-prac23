@@ -4,8 +4,17 @@ on:
   [pull_request]
 
 jobs:
-  feature-based-dev-setup:
+  feature-based-dev-test:
     runs-on: ubuntu-latest
     steps:
-    - name: simple execution command
-      run: echo "Will add code checks here in next challenge"
+    - name: Check out repo
+      uses: actions/checkout@main
+    - name: Install az ml extension
+      run: az extension add -n ml -y
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+    - name: Start an ML compute cluster
+      run: az ml compute start --name compute-sh-dl --resource-group sh-machinelearn
+                    --workspace-name sh-machinelearn-ws --no-wait

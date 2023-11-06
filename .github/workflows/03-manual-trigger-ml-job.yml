@@ -20,5 +20,5 @@ jobs:
       #              --workspace-name sh-machinelearn-ws --no-wait
     - name: Trigger Azure Machine Learning train job
       run: az ml job create --file src/job.yml --resource-group sh-machinelearn
-                    --workspace-name sh-machinelearn-ws
+                    --workspace-name sh-machinelearn-ws 
 
